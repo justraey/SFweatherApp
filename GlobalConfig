@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+		<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="b7a688fe-00c2-481e-8627-ddf22416f3bc" >
+		<http:listener-connection host="0.0.0.0" port="${http.listener.port}" />
+	</http:listener-config>
+	 <http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="eed11c38-c498-4261-ab1d-bdc4afbdfde7" basePath="${http.request.basePath}" >
+		<http:request-connection protocol="HTTPS" host="${http.request.host}" />
+	</http:request-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="6293588c-0057-4047-875d-e7b9a881c8d4" file="${env}.properties" />
+	<global-property doc:name="Global Property" doc:id="14909e2a-291a-4ee7-90c3-fbf8989b97ec" name="env" value="dev" />
+</mule>
