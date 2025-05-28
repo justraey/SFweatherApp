@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	   <http:listener-config name="openweatherexperienceapi-httpListenerConfig" >
+        <http:listener-connection host="0.0.0.0" port="${http.listener.port}" />
+    </http:listener-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="c019ad65-3e17-4975-a912-ab6b6772c77a" basePath="/${http.request.basePath}" >
+		<http:request-connection host="${http.request.host}" port="${http.request.port}" connectionIdleTimeout="100000" protocol="HTTPS"/>
+	</http:request-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="e3ec060e-6e07-46ae-8df7-bd2d34cc51a3" file="${env}.properties" />
+	<global-property doc:name="Global Property" doc:id="6b35b792-159a-4725-b271-8438b3aaca58" name="env" value="dev" />
+	<api-gateway:autodiscovery apiId="20368823" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="f4ed1c2b-03e9-4641-b32f-c017961bc184" flowRef="openweatherexperienceapi-main" />
+	<flow name="implimentationFlow" doc:id="b0d5b572-d50c-4d49-97dc-95901d145c12" >
+		<set-variable value="#[payload]" doc:name="paylodVar" doc:id="1c4386f0-3362-4ab6-9370-3dfec84c6692" variableName="payloadVar"/>
+		<http:request method="GET" doc:name="Request" doc:id="3d7685c3-c168-46ba-a407-d144fac34232" config-ref="HTTP_Request_configuration1" path="/${http.request.path}">
+			<http:query-params ><![CDATA[#[output application/json
+---
+
+{
+	"City" : attributes.queryParams.City,
+	 State : attributes.queryParams.State,
+	Country : attributes.queryParams.Country,
+	"units" : attributes.queryParams.units 
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="28fbeb22-475c-428e-b5fe-ac9cd0b62fad" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
